@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\ModelTodo;
+use App\Todo;
 
-class ExampleController extends Controller
+class TodoController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -14,13 +14,26 @@ class ExampleController extends Controller
     {
         //
     }
-    public function index(){
-        $data = ModelTodo::all();
-        return response($data);
-    }public function show($id){
+    
+    public function all(){
+        $data = Todo::all();
+        return response()->json($data, 200);
+    }
+    public function paginate()
+    {
+        $getPost = Todo::OrderBy("id", "DESC")->paginate(10);
+        $out = [
+            "message" => "list_post",
+            "results" => $getPost
+        ];
+
+        return response()->json($out, 200);
+    }
+    public function show($id){
         $data = ModelTodo::where('id',$id)->get();
         return response ($data);
-    }public function store (Request $request){
+    }
+    public function store (Request $request){
         $data = new ModelTodo();
         $data->activity = $request->input('activity');
         $data->description = $request->input('description');
